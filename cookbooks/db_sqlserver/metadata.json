@@ -57,10 +57,9 @@
         "description": "Sql dump file to be retrieved from the s3 bucket. Ex: production-dump.sql or production-dump.sql.zip",
         "display_name": "Sql dump file",
         "recipes": [
-          "db_sqlserver::default",
-          "db_sqlserver::import_dump_from_s3"
+          "db_sqlserver::default"
         ],
-        "required": "optional"
+        "required": "required"
       },
       "db_sqlserver/backup/existing_backup_file_name_pattern": {
         "default": "{0}_*.bak",

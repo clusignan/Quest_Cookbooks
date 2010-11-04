@@ -77,8 +77,14 @@ attribute "db_sqlserver/application_pass",
 attribute "s3/file_dump",
   :display_name => "Sql dump file",
   :description => "Sql dump file to be retrieved from the s3 bucket. Ex: production-dump.sql or production-dump.sql.zip",
-  :recipes => ["db_sqlserver::default", "db_sqlserver::import_dump_from_s3"],
+  :recipes => ["db_sqlserver::import_dump_from_s3"],
   :required => "optional"
+  
+attribute "s3/file_dump",
+  :display_name => "Sql dump file",
+  :description => "Sql dump file to be retrieved from the s3 bucket. Ex: production-dump.sql or production-dump.sql.zip",
+  :recipes => ["db_sqlserver::default"],
+  :required => "required"
 
 attribute "s3/bucket_dump",
   :display_name => "Bucket for sql dump",
