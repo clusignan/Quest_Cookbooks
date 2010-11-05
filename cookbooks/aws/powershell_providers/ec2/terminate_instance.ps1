@@ -30,7 +30,7 @@ $region = $env:EC2_PLACEMENT_AVAILABILITY_ZONE.substring(0,$env:EC2_PLACEMENT_AV
 
 Write-Output "*** Instance is in region: [$region]"
 
-$ec2_config = New-Object –TypeName Amazon.EC2.AmazonEC2Config 
+$ec2_config = New-Object -TypeName Amazon.EC2.AmazonEC2Config 
 [void]$ec2_config.WithServiceURL("https://$region.ec2.amazonaws.com")
 
 #create ec2 client based on the ServiceURL(region)
