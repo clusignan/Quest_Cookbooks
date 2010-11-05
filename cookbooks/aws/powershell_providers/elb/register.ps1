@@ -34,9 +34,9 @@ $region = $az.substring(0,$az.length-1)
 
 Write-Output "*** Instance is in region: [$region]"
 
-$elb_config.WithServiceURL("https://elasticloadbalancing."+$region+".amazonaws.com")
+[void]$elb_config.WithServiceURL("https://elasticloadbalancing.$region.amazonaws.com")
 
-#create elb client base on the ServiceURL(region)
+#create elb client based on the ServiceURL(region)
 $client_elb=[Amazon.AWSClientFactory]::CreateAmazonElasticLoadBalancingClient($accessKeyID,$secretAccessKey,$elb_config)
 
 

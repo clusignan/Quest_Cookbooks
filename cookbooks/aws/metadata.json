@@ -2,6 +2,7 @@
     "recipes": {
       "aws::deregister_from_elb": "Deregister the instance with an Elastic Load Balancer created in the same ec2 region. Requires recipe: 'aws::default'",
       "aws::default": "Install Amazon Web Services SDK for .NET",
+      "aws::terminate_instance": "Terminates the current instance. Requires recipe: 'aws::default'",
       "aws::register_with_elb": "Register the instance with an Elastic Load Balancer created in the same ec2 region. Requires recipe: 'aws::default'",
       "aws::upload": "Uploads a file to an S3 bucket",
       "aws::download": "Retrieves a file from an S3 bucket"
@@ -10,7 +11,7 @@
     },
     "recommendations": {
     },
-    "version": "0.1.6",
+    "version": "0.1.7",
     "maintainer": "RightScale, Inc.",
     "long_description": "= DESCRIPTION:\n\nAws recipes and providers.\n\n= ATTRIBUTES:\n\nSee metadata.rb\n\n= USAGE:\n\nDesigned to be run within a RightScale ServerTemplate\n\nBoot Scripts\n* install_dotnet_sdk - Install Amazon Web Services SDK for .NET\n* register_with_elb - Register the instance with an Elastic Load Balancer created in the same ec2 region. Requires recipe: 'aws::install_dotnet_sdk'\n\nDecommission Scripts\n* deregister_from_elb - Deregister the instance with an Elastic Load Balancer created in the same ec2 region. Requires recipe: 'aws::install_dotnet_sdk'\n",
     "description": "Amazon Web Services recipes and providers for Windows",
@@ -80,7 +81,8 @@
           "aws::register_with_elb",
           "aws::deregister_from_elb",
           "aws::download",
-          "aws::upload"
+          "aws::upload",
+          "aws::terminate_instance"
         ],
         "required": "required"
       },
@@ -110,7 +112,8 @@
           "aws::register_with_elb",
           "aws::deregister_from_elb",
           "aws::download",
-          "aws::upload"
+          "aws::upload",
+          "aws::terminate_instance"
         ],
         "required": "required"
       },

@@ -22,31 +22,28 @@
 # locals.
 $accessKeyID = Get-NewResource access_key_id
 $secretAccessKey = Get-NewResource secret_access_key
-$elbName = Get-NewResource elb_name
 
 #stop and fail script when a command fails
 $ErrorActionPreference="Stop"
 
-$elb_config = New-Object -TypeName Amazon.ElasticLoadBalancing.AmazonElasticLoadBalancingConfig
-	
-$az = $env:EC2_PLACEMENT_AVAILABILITY_ZONE
-$region = $az.substring(0,$az.length-1)
+$region = $env:EC2_PLACEMENT_AVAILABILITY_ZONE.substring(0,$env:EC2_PLACEMENT_AVAILABILITY_ZONE.length-1)
 
 Write-Output "*** Instance is in region: [$region]"
 
-[void]$elb_config.WithServiceURL("https://elasticloadbalancing.$region.amazonaws.com")
+$ec2_config = New-Object –TypeName Amazon.EC2.AmazonEC2Config 
+[void]$ec2_config.WithServiceURL("https://$region.ec2.amazonaws.com")
 
-#create elb client based on the ServiceURL(region)
-$client_elb=[Amazon.AWSClientFactory]::CreateAmazonElasticLoadBalancingClient($accessKeyID,$secretAccessKey,$elb_config)
+#create ec2 client based on the ServiceURL(region)
+$client_ec2=[Amazon.AWSClientFactory]::CreateAmazonEC2Client($env:AWS_ACCESS_KEY_ID,$env:AWS_SECRET_ACCESS_KEY,$ec2_config)
 
-$elb_deregister_request = New-Object -TypeName Amazon.ElasticLoadBalancing.Model.DeregisterInstancesFromLoadBalancerRequest
+$request = New-Object –TypeName Amazon.EC2.Model.TerminateInstancesRequest
 
-$instance_object=New-Object -TypeName Amazon.ElasticLoadBalancing.Model.Instance
-$instance_object.InstanceId=$env:EC2_INSTANCE_ID
+[void]$request.WithInstanceId($env:EC2_INSTANCE_ID)
 
-$elb_deregister_request.WithLoadBalancerName($elbName)
-$elb_deregister_request.WithInstances($instance_object)
+$ec2_describe_response=$client_ec2.TerminateInstances($request);
 
-$elb_register_response=$client_elb.DeregisterInstancesFromLoadBalancer($elb_deregister_request)
+$ec2_describe_response.TerminateInstancesResult
 
-write-output $elb_register_response
+
+
+
