@@ -27,16 +27,18 @@ $ErrorActionPreference="Stop"
 
 if (get-command Get-NewResource -ErrorAction SilentlyContinue)
 {
+	Write-Output "*** RECIPE"
 	$accessKeyID = Get-NewResource access_key_id
 	$secretAccessKey = Get-NewResource secret_access_key
     $elbName = Get-NewResource elb_name
     #check the required parameters
 	if($accessKeyID -eq $null -or $secretAccessKey -eq $null -or $elbName -eq $null){ 
-		throw("Required provider are missing. Please provide: access_key_id, secret_access_key and elb_name")
+		throw("Required parmeters are missing. Please provide: access_key_id, secret_access_key and elb_name")
 	}
 }
 else
 {
+	Write-Output "*** SCRIPT"
 	#check the required parameters
 	if($accessKeyID -eq $null -or $secretAccessKey -eq $null -or $elbName -eq $null){ 
 		throw("Required parameters are missing`nUSAGE: {0} -ACCESSKEYID id -SECRETACCESSKEY key -ELBNAME name`n" -f $myinvocation.mycommand.name)
@@ -46,6 +48,7 @@ else
 $elb_config = New-Object -TypeName Amazon.ElasticLoadBalancing.AmazonElasticLoadBalancingConfig
 	
 $az = $env:EC2_PLACEMENT_AVAILABILITY_ZONE
+Write-Output "*** AZ=[$az]="+$az.length
 $region = $az.substring(0,$az.length-1)
 
 Write-Output "*** Instance is in region: [$region]"
