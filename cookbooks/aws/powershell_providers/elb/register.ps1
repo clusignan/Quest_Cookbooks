@@ -26,7 +26,6 @@ $ErrorActionPreference="Stop"
 
 if (get-command Get-NewResource -ErrorAction SilentlyContinue)
 {
-	Write-Output "*** RECIPE"
 	$accessKeyID = Get-NewResource access_key_id
 	$secretAccessKey = Get-NewResource secret_access_key
     $elbName = Get-NewResource elb_name
@@ -37,7 +36,6 @@ if (get-command Get-NewResource -ErrorAction SilentlyContinue)
 }
 else
 {
-	Write-Output "*** SCRIPT"
 	#check the required parameters
 	if($accessKeyID -eq $null -or $secretAccessKey -eq $null -or $elbName -eq $null){ 
 		throw("Required parameters are missing`nUSAGE: {0} -ACCESSKEYID id -SECRETACCESSKEY key -ELBNAME name`n" -f $myinvocation.mycommand.name)

@@ -19,13 +19,28 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# locals.
-$accessKeyID = Get-NewResource access_key_id
-$secretAccessKey = Get-NewResource secret_access_key
-$elbName = Get-NewResource elb_name
+Param($ACCESSKEYID,$SECRETACCESSKEY,$ELBNAME)
 
 #stop and fail script when a command fails
 $ErrorActionPreference="Stop"
+
+if (get-command Get-NewResource -ErrorAction SilentlyContinue)
+{
+	$accessKeyID = Get-NewResource access_key_id
+	$secretAccessKey = Get-NewResource secret_access_key
+    $elbName = Get-NewResource elb_name
+    #check the required parameters
+	if($accessKeyID -eq $null -or $secretAccessKey -eq $null -or $elbName -eq $null){ 
+		throw("Required parmeters are missing. Please provide: access_key_id, secret_access_key and elb_name")
+	}
+}
+else
+{
+	#check the required parameters
+	if($accessKeyID -eq $null -or $secretAccessKey -eq $null -or $elbName -eq $null){ 
+		throw("Required parameters are missing`nUSAGE: {0} -ACCESSKEYID id -SECRETACCESSKEY key -ELBNAME name`n" -f $myinvocation.mycommand.name)
+	}
+}
 
 $elb_config = New-Object -TypeName Amazon.ElasticLoadBalancing.AmazonElasticLoadBalancingConfig
 	
