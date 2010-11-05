@@ -34,7 +34,7 @@ $ec2_config = New-Object –TypeName Amazon.EC2.AmazonEC2Config
 [void]$ec2_config.WithServiceURL("https://$region.ec2.amazonaws.com")
 
 #create ec2 client based on the ServiceURL(region)
-$client_ec2=[Amazon.AWSClientFactory]::CreateAmazonEC2Client($env:AWS_ACCESS_KEY_ID,$env:AWS_SECRET_ACCESS_KEY,$ec2_config)
+$client_ec2=[Amazon.AWSClientFactory]::CreateAmazonEC2Client($accessKeyID,$secretAccessKey,$ec2_config)
 
 $request = New-Object –TypeName Amazon.EC2.Model.TerminateInstancesRequest
 
