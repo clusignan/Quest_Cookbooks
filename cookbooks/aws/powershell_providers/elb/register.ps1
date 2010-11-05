@@ -19,8 +19,8 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-Param($ACCESSKEYID,$SECRETACCESSKEY,$ELBNAME)
-Set-PSdebug -strict
+#Param($ACCESSKEYID,$SECRETACCESSKEY,$ELBNAME)
+#Set-PSdebug -strict
 
 #stop and fail script when a command fails
 $ErrorActionPreference="Stop"
@@ -48,7 +48,6 @@ else
 $elb_config = New-Object -TypeName Amazon.ElasticLoadBalancing.AmazonElasticLoadBalancingConfig
 	
 $az = $env:EC2_PLACEMENT_AVAILABILITY_ZONE
-Write-Output("*** AZ=[$az]=[{0}]" -f $az.length)
 $region = $az.substring(0,$az.length-1)
 
 Write-Output "*** Instance is in region: [$region]"
