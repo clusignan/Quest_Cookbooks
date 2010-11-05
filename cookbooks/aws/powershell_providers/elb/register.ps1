@@ -48,7 +48,7 @@ else
 $elb_config = New-Object -TypeName Amazon.ElasticLoadBalancing.AmazonElasticLoadBalancingConfig
 	
 $az = $env:EC2_PLACEMENT_AVAILABILITY_ZONE
-Write-Output("*** AZ=[$az]=[{0}]"-$az.length)
+Write-Output("*** AZ=[$az]=[{0}]" -f $az.length)
 $region = $az.substring(0,$az.length-1)
 
 Write-Output "*** Instance is in region: [$region]"
