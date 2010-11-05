@@ -6,7 +6,7 @@
 # All rights reserved
 #
 
-aws_elb "terminate current instance provider call" do
+aws_ec2 "terminate current instance provider call" do
   access_key_id @node[:aws][:access_key_id]
   secret_access_key @node[:aws][:secret_access_key]
   action :terminate_instance
