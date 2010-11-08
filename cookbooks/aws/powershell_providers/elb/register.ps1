@@ -24,19 +24,20 @@ Param($ACCESSKEYID,$SECRETACCESSKEY,$ELBNAME)
 #stop and fail script when a command fails
 $ErrorActionPreference="Stop"
 
+#check to see if this powershell script was called from a Chef recipe
 if (get-command Get-NewResource -ErrorAction SilentlyContinue)
 {
 	$accessKeyID = Get-NewResource access_key_id
 	$secretAccessKey = Get-NewResource secret_access_key
     $elbName = Get-NewResource elb_name
-    #check the required parameters
+    #check the required provider parameters
 	if($accessKeyID -eq $null -or $secretAccessKey -eq $null -or $elbName -eq $null){ 
 		throw("Required parmeters are missing. Please provide: access_key_id, secret_access_key and elb_name")
 	}
 }
 else
 {
-	#check the required parameters
+	#check the required script parameters
 	if($accessKeyID -eq $null -or $secretAccessKey -eq $null -or $elbName -eq $null){ 
 		throw("Required parameters are missing`nUSAGE: {0} -ACCESSKEYID id -SECRETACCESSKEY key -ELBNAME name`n" -f $myinvocation.mycommand.name)
 	}

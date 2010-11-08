@@ -43,7 +43,7 @@ $releasesPath = Join-Path $releasesPath ""
 
 if (!(Test-Path $releasesPath)) {
 	Write-Output "Creating directory: $releasesPath"
-	New-Item $releasesPath -type directory 
+	New-Item $releasesPath -type directory > $null
 }
 
 $deploy_date = $(get-date -uformat "%Y%m%d%H%M%S")

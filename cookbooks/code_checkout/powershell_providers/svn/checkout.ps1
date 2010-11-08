@@ -56,7 +56,7 @@ $releasesPath = Join-Path $releasesPath ""
 
 if (!(Test-Path $releasesPath)) {
 	Write-Output "Creating directory: $releasesPath"
-	New-Item $releasesPath -type directory 
+	New-Item $releasesPath -type directory > $null
 }
 
 $deploy_date = $(get-date -uformat "%Y%m%d%H%M%S")
@@ -67,7 +67,7 @@ Write-Output "Creating new releases directory [$deploy_path]"
 $latest_release=Get-ChildItem $releasesPath | Sort-Object Name -descending | Select-Object Name | Select-Object -first 1
 if (($latest_release -eq $null) -or ($forceCheckout -eq "true"))
 {
-	New-Item $deploy_path -type directory 
+	New-Item $deploy_path -type directory > $null
 	Write-Output "SVN checkout in [$deploy_path]"
 }
 else
@@ -91,7 +91,7 @@ else
 			Remove-Item $deploy_path -r -force
 		}
 		Write-Output "Creating new releases directory [$deploy_path]"
-		New-Item $deploy_path -type directory 
+		New-Item $deploy_path -type directory > $null
 	} 
 }
 

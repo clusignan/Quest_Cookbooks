@@ -19,38 +19,31 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# locals.
-$accessKeyID = Get-NewResource access_key_id
-$secretAccessKey = Get-NewResource secret_access_key
-$s3Bucket = Get-NewResource s3_bucket
-$s3File = Get-NewResource s3_file
-$filePath = Get-NewResource file_path
-$timeoutSeconds = Get-NewResource timeout_seconds
+Param($ACCESSKEYID,$SECRETACCESSKEY,$S3BUCKET,$FILEPATH,$S3FILE,$TIMEOUTSECONDS)
 
 #stop and fail script when a command fails
 $ErrorActionPreference="Stop"
 
-#check inputs.
-$Error.Clear()
-if (($s3Bucket -eq $NULL) -or ($s3Bucket -eq ""))
+#check to see if this powershell script was called from a Chef recipe
+if (get-command Get-NewResource -ErrorAction SilentlyContinue)
 {
-    Write-Error "***Error: provider requires 's3_bucket' parameter to be set!"
-    exit 117
+	$accessKeyID = Get-NewResource access_key_id
+	$secretAccessKey = Get-NewResource secret_access_key
+	$s3Bucket = Get-NewResource s3_bucket
+	$s3File = Get-NewResource s3_file
+	$filePath = Get-NewResource file_path
+	$timeoutSeconds = Get-NewResource timeout_seconds
+    #check the required provider parameters
+	if ($accessKeyID -eq $null -or $secretAccessKey -eq $null -or $s3Bucket -eq $null -or $filePath -eq $null){ 
+		throw("Required parmeters are missing. Please provide: access_key_id, secret_access_key, s3_bucket and file_path")
+	}
 }
-if (($filePath -eq $NULL) -or ($filePath -eq ""))
+else
 {
-    Write-Error "***Error: provider requires 'file_path' parameter to be set!"
-    exit 118
-}
-if (($accessKeyID -eq $NULL) -or ($accessKeyID -eq ""))
-{
-    Write-Error "***Error: provider requires 'access_key_id' parameter to be set!"
-    exit 119
-}
-if (($secretAccessKey -eq $NULL) -or ($secretAccessKey -eq ""))
-{
-    Write-Error "***Error: provider requires 'secret_access_key' parameter to be set!"
-    exit 120
+	#check the required script parameters
+	if ($accessKeyID -eq $null -or $secretAccessKey -eq $null -or $s3Bucket -eq $null -or $filePath -eq $null){ 
+		throw("Required parameters are missing`nUSAGE: {0} -ACCESSKEYID id -SECRETACCESSKEY key -FILEPATH filepath -S3BUCKET bucket [-S3FILE newname -TIMEOUTSECONDS timeout]`n" -f $myinvocation.mycommand.name)
+	}
 }
 
 $client=[Amazon.AWSClientFactory]::CreateAmazonS3Client($accessKeyID,$secretAccessKey)
@@ -80,7 +73,7 @@ if (($s3File -eq $NULL) -or ($s3File -eq ""))
 	$s3File = $fileObject.Name
 }
 
-Write-Output("***Uploading file["+$fileObject.Name+"] to bucket[$s3Bucket] as[$s3File]")
+Write-Output("***Uploading file["+$fileObject.FullName+"] to bucket[$s3Bucket] as[$s3File]")
 
 $request = New-Object -TypeName Amazon.S3.Model.PutObjectRequest
 [void]$request.WithFilePath($fileObject.FullName)
@@ -101,8 +94,4 @@ if($S3Response -eq $null)
 { 
 	Write-Error "ERROR: Amazon S3 put requrest failed. Aborting..." 
 	exit 121
-}
-else
-{
-	Write-Output "***Upload successfully. AWS Response:"$S3Response
 }

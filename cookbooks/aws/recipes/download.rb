@@ -14,18 +14,3 @@ aws_s3 "downloadmyfile" do
   download_dir @node[:aws][:download_dir]
   action :get
 end
-
-powershell "list drive c" do
-  chef_attribute = Chef::Node::Attribute.new(
-                      {},
-                      {},
-                      {})
-  parameters(chef_attribute)
-
-  # Create the powershell script
-  powershell_script = <<'POWERSHELL_SCRIPT'
-    ls c:\
-POWERSHELL_SCRIPT
-
-  source(powershell_script)
-end

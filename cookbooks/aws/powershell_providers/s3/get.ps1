@@ -19,42 +19,30 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# locals.
-$accessKeyID = Get-NewResource access_key_id
-$secretAccessKey = Get-NewResource secret_access_key
-$s3Bucket = Get-NewResource s3_bucket
-$s3File = Get-NewResource s3_file
-$downloadDir = Get-NewResource download_dir
+Param($ACCESSKEYID,$SECRETACCESSKEY,$S3FILE,$S3BUCKET,$DOWNLOADDIR)
 
 #stop and fail script when a command fails
-#$ErrorActionPreference="Stop"
+$ErrorActionPreference="Stop"
 
-#check inputs.
-$Error.Clear()
-if (($s3Bucket -eq $NULL) -or ($s3Bucket -eq ""))
+#check to see if this powershell script was called from a Chef recipe
+if (get-command Get-NewResource -ErrorAction SilentlyContinue)
 {
-    Write-Error "***Error: provider requires 's3_bucket' parameter to be set!"
-    exit 112
+	$accessKeyID = Get-NewResource access_key_id
+	$secretAccessKey = Get-NewResource secret_access_key
+	$s3Bucket = Get-NewResource s3_bucket
+	$s3File = Get-NewResource s3_file
+	$downloadDir = Get-NewResource download_dir
+    #check the required provider parameters
+	if ($accessKeyID -eq $null -or $secretAccessKey -eq $null -or $s3Bucket -eq $null -or $s3File -eq $null -or $downloadDir -eq $null){ 
+		throw("Required parmeters are missing. Please provide: access_key_id, secret_access_key, s3_bucket, s3_file and download_dir")
+	}
 }
-if (($s3File -eq $NULL) -or ($s3File -eq ""))
+else
 {
-    Write-Error "***Error: provider requires 's3_file' parameter to be set!"
-    exit 113
-}
-if (($downloadDir -eq $NULL) -or ($downloadDir -eq ""))
-{
-    Write-Error "***Error: provider requires 'download_dir' parameter to be set!"
-    exit 114
-}
-if (($accessKeyID -eq $NULL) -or ($accessKeyID -eq ""))
-{
-    Write-Error "***Error: provider requires 'access_key_id' parameter to be set!"
-    exit 115
-}
-if (($secretAccessKey -eq $NULL) -or ($secretAccessKey -eq ""))
-{
-    Write-Error "***Error: provider requires 'secret_access_key' parameter to be set!"
-    exit 116
+	#check the required script parameters
+	if ($accessKeyID -eq $null -or $secretAccessKey -eq $null -or $s3Bucket -eq $null -or $s3File -eq $null -or $downloadDir -eq $null){ 
+		throw("Required parameters are missing`nUSAGE: {0} -ACCESSKEYID id -SECRETACCESSKEY key -S3FILE file -S3BUCKET bucket -DOWNLOADDIR dir`n" -f $myinvocation.mycommand.name)
+	}
 }
 
 $client=[Amazon.AWSClientFactory]::CreateAmazonS3Client($accessKeyID,$secretAccessKey)
@@ -67,7 +55,7 @@ if ($targetpath -match '^(.+)\\')
 	if (!(test-path $fullpath -PathType Container))
 	{
 		Write-output "***Directory [$fullpath] missing, creating it."
-		New-Item $fullpath -type directory 
+		New-Item $fullpath -type directory > $null
 	}
 }
 

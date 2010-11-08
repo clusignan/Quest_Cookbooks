@@ -19,12 +19,29 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# locals.
-$accessKeyID = Get-NewResource access_key_id
-$secretAccessKey = Get-NewResource secret_access_key
+Param($ACCESSKEYID,$SECRETACCESSKEY)
 
 #stop and fail script when a command fails
 $ErrorActionPreference="Stop"
+
+#check to see if this powershell script was called from a Chef recipe
+if (get-command Get-NewResource -ErrorAction SilentlyContinue)
+{
+	$accessKeyID = Get-NewResource access_key_id
+	$secretAccessKey = Get-NewResource secret_access_key
+    #check the required provider parameters
+	if ($accessKeyID -eq $null -or $secretAccessKey -eq $null){ 
+		throw("Required parmeters are missing. Please provide: access_key_id and secret_access_key")
+	}
+}
+else
+{
+	#check the required script parameters
+	if ($accessKeyID -eq $null -or $secretAccessKey -eq $null){ 
+		throw("Required parameters are missing`nUSAGE: {0} -ACCESSKEYID id -SECRETACCESSKEY`n" -f $myinvocation.mycommand.name)
+	}
+}
+
 
 $region = $env:EC2_PLACEMENT_AVAILABILITY_ZONE.substring(0,$env:EC2_PLACEMENT_AVAILABILITY_ZONE.length-1)
 
@@ -42,8 +59,4 @@ $request = New-Object -TypeName Amazon.EC2.Model.TerminateInstancesRequest
 
 $ec2_describe_response=$client_ec2.TerminateInstances($request);
 
-$ec2_describe_response.TerminateInstancesResult
-
-
-
-
+exit 0
