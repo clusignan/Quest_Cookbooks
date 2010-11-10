@@ -41,8 +41,12 @@ powershell "Install AWS SDK" do
     }
     Else {
       cd "$env:ATTACHMENTS_PATH"
+      
+      #create multiple directories and continue if directory exists
+      New-Item  c:\tmp -type directory -ErrorAction SilentlyContinue > $null
+      
       Write-Output "*** Installing AWS SDK for .NET msi"
-      cmd /c msiexec /package AWSSDKForNET_1.0.11.msi /quiet
+      cmd /c msiexec /package AWSSDKForNET_1.0.11.msi /quiet /l* c:\tmp\aws-sdk-msi-install.log
       
       $rightLinkLibAwsPath = join-path (Split-Path ${env:RS_MONITORS_DIR} -parent) "aws"
       if (test-path $rightLinkLibAwsPath -PathType Container)

@@ -1,0 +1,8 @@
+= DESCRIPTION:
+
+MySQL Server Recipes and Providers
+
+= USAGE:
+
+Designed to be run within a RightScale ServerTemplate.
+
