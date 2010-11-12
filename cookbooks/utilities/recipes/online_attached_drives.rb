@@ -26,32 +26,33 @@ powershell "Change 'Offline' status to 'Online' for the attached drives" do
 
 # Create the powershell script
 powershell_script = <<'POWERSHELL_SCRIPT'
-$diskpartcommands=@"
-list disk
-"@
-$offlinedisks = invoke-expression '$diskpartcommands | diskpart.exe | where {$_ -match "Offline"}'
+  $diskpart_path = $env:systemroot + '\system32\diskpart.exe'
+  if (!(Test-Path $diskpart_path))
+  {
+    Write-Warning "diskpart.exe is missing, probably 2003 image."
+    exit 0 
+  }
 
-echo "*** Offline disks:[`n$offlinedisks]"
+  $offlinedisks = invoke-expression 'Write-Output "list disk" | diskpart.exe | where {$_ -match "Offline"}'
+  echo "*** Offline disks:[`n$offlinedisks]"
 
-$offlinediskids=$offlinedisks -replace ".*Disk (\d+).*","`$1"
+  $offlinediskids=$offlinedisks -replace ".*Disk (\d+).*","`$1"
 
-#change disk state from 'Offline' to 'Online' and clear readonly flag
-echo $offlinediskids | Foreach-Object {
-if ($_ -match "^\d+$") {
-$command=@"
-select disk=$_
-online disk
-attributes disk clear readonly
-"@
-$command | diskpart.exe
-}
-}
+  #change disk state from 'Offline' to 'Online' and clear readonly flag
+  echo $offlinediskids | Foreach-Object {
+    if ($_ -match "^\d+$") {
+      $command=@"
+      select disk=$_
+      online disk
+      attributes disk clear readonly
+      "@
+      
+      $command | diskpart.exe
+    }
+  }
 
-$diskpartcommands=@"
-list disk
-"@
-Write-Output "*** All disks:" 
-$diskpartcommands | diskpart.exe
+  Write-Output "*** All disks:" 
+  Write-Output "list disk" | diskpart.exe
 POWERSHELL_SCRIPT
 
 source(powershell_script)
