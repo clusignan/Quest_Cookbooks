@@ -45,7 +45,7 @@ powershell_script = <<'POWERSHELL_SCRIPT'
       select disk=$_
       online disk
       attributes disk clear readonly
-      "@
+"@
       
       $command | diskpart.exe
     }
