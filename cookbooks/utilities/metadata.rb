@@ -3,7 +3,7 @@ maintainer_email "support@rightscale.com"
 license          IO.read(File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'LICENSE')))
 description      "Windows Admin recipes and providers"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "0.3.2"
+version          "0.3.3"
 
 recipe "utilities::default", "Not yet implemented"
 recipe "utilities::change_admin_password", "Changes the administrator password"
@@ -39,3 +39,28 @@ attribute "schtasks/daily_time",
   :recipes => ["utilities::create_scheduled_task"],
   :required => "optional",
   :default => ""
+
+attribute "dns/dns_id",
+  :display_name => "DNS id to register",
+  :description => "DNS id (from DNS provider) to register for the current public IP",
+  :recipes => ["utilities::register_dns_name"],
+  :required => "required"
+
+attribute "dns/user",
+  :display_name => "User name for DNS Made Easy",
+  :description => "User name for DNS Made Easy HTTP request",
+  :recipes => ["utilities::register_dns_name"],
+  :required => "required"
+
+attribute "dns/password",
+  :display_name => "Password for DNS Made Easy",
+  :description => "Password for DNS Made Easy HTTP request",
+  :recipes => ["utilities::register_dns_name"],
+  :required => "required"
+
+attribute "dns/address_type",
+  :display_name => "Type of address to register",
+  :description => "Valid values are 'public' (default) or 'private'",
+  :recipes => ["utilities::register_dns_name"],
+  :required => "optional",
+  :default => "public"
