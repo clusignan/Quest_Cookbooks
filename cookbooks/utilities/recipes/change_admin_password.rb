@@ -11,7 +11,7 @@ powershell "Changes the administrator password" do
 
   # Create the powershell script
   powershell_script = <<'POWERSHELL_SCRIPT'
-    net user administrator "$env:ADMIN_PASSWORD"
+    net user beamer "$env:ADMIN_PASSWORD"
 POWERSHELL_SCRIPT
 
   source(powershell_script)
